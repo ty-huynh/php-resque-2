@@ -26,7 +26,6 @@ class UtilTest extends TestCase
      * @param string $force_unit a definitive unit
      * @param string $format the return string format
      * @param boolean $si whether to use SI prefixes or IEC
-     * @return string
      *
      * @dataProvider getBytes
      */
