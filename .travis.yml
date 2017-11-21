@@ -21,7 +21,6 @@ before_install:
 
 install:
   - composer install
-  - ./vendor/bin/simple-phpunit install
 
 script:
   # this run phpunit/tests
