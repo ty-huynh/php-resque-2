@@ -26,7 +26,9 @@
         "ext-phpiredis": "Native PHP extension for Redis connectivity. Predis will automatically utilize when available."
     },
     "require-dev": {
-        "phpunit/phpunit": "~6.4"
+        "phpunit/phpunit": "~6.4",
+        "symfony/phpunit-bridge": "^4.0@beta",
+        "squizlabs/php_codesniffer": "^3.1"
     },
     "bin": [
         "bin/resque"
