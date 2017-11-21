@@ -1,18 +1,32 @@
 <?php
+/**
+ * This file is part of the php-resque package.
+ *
+ * (c) Michael Haynes <mike@mjphaynes.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
-namespace Resque\Tests\Heplers\Utils;
+namespace Tests\Resque\Heplers\Utils;
 
 use Resque\Helpers\Util;
 use PHPUnit\Framework\TestCase;
 
-class SluggerTest extends TestCase
+/**
+ * Class UtilTest
+ *
+ * @author Romain DARY <romain.dary@eoko.fr>
+ */
+class UtilTest extends TestCase
 {
     /**
-     * @param $expected
-     * @param $bytes
-     * @param null $force_unit
-     * @param null $format
-     * @param bool $si
+     * @param string $expected expected readable sizes
+     * @param integer $bytes size in bytes
+     * @param string $force_unit a definitive unit
+     * @param string $format the return string format
+     * @param boolean $si whether to use SI prefixes or IEC
+     * @return string
      *
      * @dataProvider getBytes
      */
