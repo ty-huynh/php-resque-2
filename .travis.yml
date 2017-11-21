@@ -25,7 +25,7 @@ install:
 
 script:
   # this run phpunit/tests
-  - ./vendor/bin/simple-phpunit
+  - ./vendor/bin/phpunit
   # this checks that the source code follows Code Syntax rules
   # @todo update for Symfony v4
   #- ./vendor/bin/phpcs --bootstrap=.php_cs
