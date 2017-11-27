@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * This file is part of the php-resque package.
  *
  * (c) Michael Haynes <mike@mjphaynes.com>
@@ -7,6 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Resque\Helpers;
 
 /**
@@ -37,7 +39,7 @@ class Util
             $units = array('B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB');
             $mod = 1024;
 
-        // SI prefixes (decimal)
+            // SI prefixes (decimal)
         } else {
             $units = array('B', 'kB', 'MB', 'GB', 'TB', 'PB');
             $mod = 1000;

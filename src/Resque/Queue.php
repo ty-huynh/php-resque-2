@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * This file is part of the php-resque package.
  *
  * (c) Michael Haynes <mike@mjphaynes.com>
@@ -7,6 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Resque;
 
 use Resque\Helpers\Stats;
@@ -108,7 +110,7 @@ class Queue
         }
 
         // If the delay is smaller than 3 years then assume that an interval
-         // has been passed i.e. 600 seconds, otherwise it's a unix timestamp
+        // has been passed i.e. 600 seconds, otherwise it's a unix timestamp
         if ($delay < 94608000) {
             $delay += time();
         }

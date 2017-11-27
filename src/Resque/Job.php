@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * This file is part of the php-resque package.
  *
  * (c) Michael Haynes <mike@mjphaynes.com>
@@ -7,6 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Resque;
 
 use Closure;
@@ -330,7 +332,7 @@ class Job
 
             $this->complete();
 
-        // setUp said don't perform this job
+            // setUp said don't perform this job
         } catch (Exception\Cancel $e) {
             $this->cancel();
             $retval = false;

@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * This file is part of the php-resque package.
  *
  * (c) Michael Haynes <mike@mjphaynes.com>
@@ -7,6 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Resque;
 
 use Predis;
@@ -312,7 +314,7 @@ class Redis
         }
 
         // try {
-            return call_user_func_array(array($this->redis, $method), $parameters);
+        return call_user_func_array(array($this->redis, $method), $parameters);
 
         // } catch (\Exception $e) {
         // 	return false;

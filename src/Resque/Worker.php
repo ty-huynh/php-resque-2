@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * This file is part of the php-resque package.
  *
  * (c) Michael Haynes <mike@mjphaynes.com>
@@ -7,6 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Resque;
 
 use Resque\Helpers\Stats;
@@ -223,7 +225,6 @@ class Worker
             ($this->blocking ? 'timeout blocking' : 'time interval').' <pop>'.$this->interval_string().'</pop>', Logger::INFO);
 
         while (true) {
-
             if ($this->memoryExceeded()) {
                 $this->log('Worker memory has been exceeded, aborting', Logger::CRITICAL);
                 $this->shutdown();
@@ -306,7 +307,7 @@ class Worker
 
                 $this->shutdown();
 
-            // In parent if $pid > 0 since pcntl_fork returns process id of child
+                // In parent if $pid > 0 since pcntl_fork returns process id of child
             } elseif ($this->child > 0) {
                 Event::fire(Event::WORKER_FORK_PARENT, array($this, $job, $this->child));
 
@@ -505,7 +506,7 @@ class Worker
         if (function_exists('pcntl_signal')) {
             $this->log('Registering sig handlers for worker '.$this, Logger::DEBUG);
 
-            declare (ticks = 1);
+            declare(ticks = 1);
             pcntl_signal(SIGTERM, array($this, 'sigForceShutdown'));
             pcntl_signal(SIGINT, array($this, 'sigForceShutdown'));
             pcntl_signal(SIGQUIT, array($this, 'sigShutdown'));
