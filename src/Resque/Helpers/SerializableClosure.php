@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * This file is part of the php-resque package.
  *
  * (c) Michael Haynes <mike@mjphaynes.com>
@@ -7,6 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Resque\Helpers;
 
 use Closure;
@@ -15,13 +17,12 @@ use SplFileObject;
 use ReflectionFunction;
 
 /**
- * Serializes job closure
+ * Serializes job closure.
  *
  * @author Michael Haynes <mike@mjphaynes.com>
  */
 class SerializableClosure implements Serializable
 {
-
     /**
      * The Closure instance.
      *
@@ -46,8 +47,7 @@ class SerializableClosure implements Serializable
     /**
      * Create a new serializable Closure instance.
      *
-     * @param  \Closure  $closure
-     * @return void
+     * @param \Closure $closure
      */
     public function __construct(Closure $closure)
     {
@@ -162,15 +162,14 @@ class SerializableClosure implements Serializable
     public function serialize()
     {
         return serialize(array(
-            'code' => $this->getCode(), 'variables' => $this->getVariables()
+            'code' => $this->getCode(), 'variables' => $this->getVariables(),
         ));
     }
 
     /**
      * Unserialize the Closure instance.
      *
-     * @param  string  $serialized
-     * @return void
+     * @param string $serialized
      */
     public function unserialize($serialized)
     {

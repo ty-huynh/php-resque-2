@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * This file is part of the php-resque package.
  *
  * (c) Michael Haynes <mike@mjphaynes.com>
@@ -7,20 +8,20 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 use Resque\Redis;
 use Resque\Helpers\Util;
 use Symfony\Component\Yaml;
 
 /**
- * Main Resque class
+ * Main Resque class.
  *
  * @author Michael Haynes <mike@mjphaynes.com>
  */
 class Resque
 {
-
     /**
-     * php-resque version
+     * php-resque version.
      */
     const VERSION = '2.1.2';
 
@@ -31,17 +32,17 @@ class Resque
     const DEFAULT_EXPIRY_TIME = 604800;
 
     /**
-     * Default config file name
+     * Default config file name.
      */
     const DEFAULT_CONFIG_FILE = 'config.yml';
 
     /**
-     * @var array Configuration settings array.
+     * @var array Configuration settings array
      */
     protected static $config = array();
 
     /**
-     * @var \Resque\Queue The queue instance.
+     * @var \Resque\Queue The queue instance
      */
     protected static $queue = null;
 
@@ -62,8 +63,9 @@ class Resque
     /**
      * Dynamically pass calls to the default connection.
      *
-     * @param  string $method     The method to call
-     * @param  array  $parameters The parameters to pass
+     * @param string $method     The method to call
+     * @param array  $parameters The parameters to pass
+     *
      * @return mixed
      */
     public static function __callStatic($method, $parameters)
@@ -74,9 +76,10 @@ class Resque
     }
 
     /**
-     * Reads and loads data from a config file
+     * Reads and loads data from a config file.
      *
-     * @param  string  $file The config file path
+     * @param string $file The config file path
+     *
      * @return bool
      */
     public static function loadConfig($file = self::DEFAULT_CONFIG_FILE)
@@ -84,22 +87,23 @@ class Resque
         self::readConfigFile($file);
 
         Redis::setConfig(array(
-            'scheme'     => static::getConfig('redis.scheme', Redis::DEFAULT_SCHEME),
-            'host'       => static::getConfig('redis.host', Redis::DEFAULT_HOST),
-            'port'       => static::getConfig('redis.port', Redis::DEFAULT_PORT),
-            'namespace'  => static::getConfig('redis.namespace', Redis::DEFAULT_NS),
-            'password'   => static::getConfig('redis.password', Redis::DEFAULT_PASSWORD),
+            'scheme' => static::getConfig('redis.scheme', Redis::DEFAULT_SCHEME),
+            'host' => static::getConfig('redis.host', Redis::DEFAULT_HOST),
+            'port' => static::getConfig('redis.port', Redis::DEFAULT_PORT),
+            'namespace' => static::getConfig('redis.namespace', Redis::DEFAULT_NS),
+            'password' => static::getConfig('redis.password', Redis::DEFAULT_PASSWORD),
             'rw_timeout' => static::getConfig('redis.rw_timeout', Redis::DEFAULT_RW_TIMEOUT),
-            'phpiredis'  => static::getConfig('redis.phpiredis', Redis::DEFAULT_PHPIREDIS)
+            'phpiredis' => static::getConfig('redis.phpiredis', Redis::DEFAULT_PHPIREDIS),
         ));
 
         return true;
     }
 
     /**
-     * Reads data from a config file
+     * Reads data from a config file.
      *
-     * @param  string  $file The config file path
+     * @param string $file The config file path
+     *
      * @return array
      */
     public static function readConfigFile($file = self::DEFAULT_CONFIG_FILE)
@@ -115,7 +119,7 @@ class Resque
             $baseDir.'/../../',
             $baseDir.'/config/',
             $baseDir.'/../config/',
-            $baseDir.'/../../config/'
+            $baseDir.'/../../config/',
         );
 
         $filename = basename($file);
@@ -147,10 +151,11 @@ class Resque
     }
 
     /**
-     * Gets Resque config variable
+     * Gets Resque config variable.
      *
-     * @param  string  $key     The key to search for (optional)
-     * @param  mixed   $default If key not found returns this (optional)
+     * @param string $key     The key to search for (optional)
+     * @param mixed  $default If key not found returns this (optional)
+     *
      * @return mixed
      */
     public static function getConfig($key = null, $default = null)
@@ -167,7 +172,7 @@ class Resque
     }
 
     /**
-     * Gets Resque stats
+     * Gets Resque stats.
      *
      * @return array
      */

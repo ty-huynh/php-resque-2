@@ -24,11 +24,6 @@ install:
   - composer install
 
 script:
-  # this run phpunit/tests
-  - ./vendor/bin/phpunit
-  # this checks that the source code follows Code Syntax rules
-  # @todo update for Symfony v4
-  #- ./vendor/bin/phpcs --bootstrap=.php_cs
-
-  # this checks that the composer.json and composer.lock files are valid
   - composer validate --strict
+  - composer tests
+  - composer cs-ci

@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * This file is part of the php-resque package.
  *
  * (c) Michael Haynes <mike@mjphaynes.com>
@@ -7,67 +8,66 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Resque\Commands;
 
 use Resque;
 use Resque\Helpers\Util;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Main Command class
+ * Main Command class.
  *
  * @author Michael Haynes <mike@mjphaynes.com>
  */
 class Command extends \Symfony\Component\Console\Command\Command
 {
-
     /**
-     * @var Logger  The logger instance
+     * @var Logger The logger instance
      */
     protected $logger;
 
     /**
-     * @var array  Config array
+     * @var array Config array
      */
     protected $config = array();
 
     /**
-     * @var array  Config to options mapping
+     * @var array Config to options mapping
      */
     protected $configOptionMap = array(
-        'include'        => 'include',
-        'scheme'         => 'redis.scheme',
-        'host'           => 'redis.host',
-        'port'           => 'redis.port',
-        'namespace'      => 'redis.namespace',
-        'password'       => 'redis.password',
-        'verbose'        => 'default.verbose',
-        'queue'          => 'default.jobs.queue',
-        'delay'          => 'default.jobs.delay',
-        'queue'          => 'default.workers.queue',
-        'blocking'       => 'default.workers.blocking',
-        'interval'       => 'default.workers.interval',
-        'timeout'        => 'default.workers.timeout',
-        'memory'         => 'default.workers.memory',
-        'log'            => 'log',
-        'listenhost'     => 'socket.listen.host',
-        'listenport'     => 'socket.listen.port',
-        'listenretry'    => 'socket.listen.retry',
-        'listentimeout'  => 'socket.listen.timeout',
-        'connecthost'    => 'socket.connect.host',
-        'connectport'    => 'socket.connect.port',
+        'include' => 'include',
+        'scheme' => 'redis.scheme',
+        'host' => 'redis.host',
+        'port' => 'redis.port',
+        'namespace' => 'redis.namespace',
+        'password' => 'redis.password',
+        'verbose' => 'default.verbose',
+        'queue' => 'default.jobs.queue',
+        'delay' => 'default.jobs.delay',
+        'queue' => 'default.workers.queue',
+        'blocking' => 'default.workers.blocking',
+        'interval' => 'default.workers.interval',
+        'timeout' => 'default.workers.timeout',
+        'memory' => 'default.workers.memory',
+        'log' => 'log',
+        'listenhost' => 'socket.listen.host',
+        'listenport' => 'socket.listen.port',
+        'listenretry' => 'socket.listen.retry',
+        'listentimeout' => 'socket.listen.timeout',
+        'connecthost' => 'socket.connect.host',
+        'connectport' => 'socket.connect.port',
         'connecttimeout' => 'socket.connect.timeout',
-        'json'           => 'socket.json',
+        'json' => 'socket.json',
     );
 
     /**
-     * Globally sets some input options that are available for all commands
+     * Globally sets some input options that are available for all commands.
      *
-     * @param array $definitions  List of command definitions
+     * @param array $definitions List of command definitions
+     *
      * @return array
      */
     protected function mergeDefinitions(array $definitions)
@@ -96,7 +96,6 @@ class Command extends \Symfony\Component\Console\Command\Command
      *
      * @param InputInterface  $input  An InputInterface instance
      * @param OutputInterface $output An OutputInterface instance
-     * @return void
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
@@ -105,11 +104,11 @@ class Command extends \Symfony\Component\Console\Command\Command
 
         // Configure Redis
         Resque\Redis::setConfig(array(
-            'scheme'    => $config['scheme'],
-            'host'      => $config['host'],
-            'port'      => $config['port'],
+            'scheme' => $config['scheme'],
+            'host' => $config['host'],
+            'port' => $config['port'],
             'namespace' => $config['namespace'],
-            'password'  => $config['password']
+            'password' => $config['password'],
         ));
 
         // Set the verbosity
@@ -163,7 +162,7 @@ class Command extends \Symfony\Component\Console\Command\Command
                         $d instanceof \Exception and ($d = '"'.$d->getMessage().'"');
                         is_array($d) and ($d = '['.implode(',', $d).']');
 
-                        return (string)$d;
+                        return (string) $d;
                     },
                     array_slice(func_get_args(), 1)
                 );
@@ -174,7 +173,7 @@ class Command extends \Symfony\Component\Console\Command\Command
     }
 
     /**
-     * Should the console output be of the polling format
+     * Should the console output be of the polling format.
      *
      * @return bool
      */
@@ -184,9 +183,10 @@ class Command extends \Symfony\Component\Console\Command\Command
     }
 
     /**
-     * Helper function that passes through to logger instance
+     * Helper function that passes through to logger instance.
      *
      * @see Logger::log
+     *
      * @return bool
      */
     public function log()
@@ -195,7 +195,7 @@ class Command extends \Symfony\Component\Console\Command\Command
     }
 
     /**
-     * Parses the configuration file
+     * Parses the configuration file.
      *
      * @return bool
      */
@@ -219,7 +219,7 @@ class Command extends \Symfony\Component\Console\Command\Command
                         // Need to make sure the log handlers are in the correct format
                         case 'log':
                             $value = array();
-                            foreach ((array)$found as $handler => $target) {
+                            foreach ((array) $found as $handler => $target) {
                                 $handler = strtolower($handler);
 
                                 if ($target !== true) {
@@ -252,7 +252,7 @@ class Command extends \Symfony\Component\Console\Command\Command
     }
 
     /**
-     * Returns all config items or a specific one
+     * Returns all config items or a specific one.
      *
      * @return mixed
      */

@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * This file is part of the php-resque package.
  *
  * (c) Michael Haynes <mike@mjphaynes.com>
@@ -7,6 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Resque\Logger\Handler;
 
 use Symfony\Component\Console\Command\Command;
@@ -14,62 +16,60 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Monolog connector class
+ * Monolog connector class.
  *
  * @author Michael Haynes <mike@mjphaynes.com>
  */
 class Connector
 {
-
     /**
-     * @var Command  command instance
+     * @var Command command instance
      */
     protected $command;
 
     /**
-     * @var InputInterface  input instance
+     * @var InputInterface input instance
      */
     protected $input;
 
     /**
-     * @var OutputInterface  output instance
+     * @var OutputInterface output instance
      */
     protected $output;
 
     /**
-     * @var array  output instance
+     * @var array output instance
      */
     private $connectionMap = array(
-        'Redis'    => 'redis://(?P<host>[a-z0-9\._-]+):(?P<port>\d+)/(?P<key>.+)',               // redis://127.0.0.1:6379/log:%worker$
-        'MongoDB'  => 'mongodb://(?P<host>[a-z0-9\._-]+):(?P<port>\d+)/(?P<dbname>[a-z0-9_]+)/(?P<collection>.+)',  // mongodb://127.0.0.1:27017/dbname/log:%worker%
-        'CouchDB'  => 'couchdb://(?P<host>[a-z0-9\._-]+):(?P<port>\d+)/(?P<dbname>[a-z0-9_]+)',  // couchdb://127.0.0.1:27017/dbname
-        'Amqp'     => 'amqp://(?P<host>[a-z0-9\._-]+):(?P<port>\d+)/(?P<name>[a-z0-9_]+)',       // amqp://127.0.0.1:5763/name
-        'Socket'   => 'socket:(?P<connection>.+)',                           // socket:udp://127.0.0.1:80
-        'Syslog'   => 'syslog:(?P<ident>[a-z]+)/(?P<facility>.+)',           // syslog:myfacility/local6
+        'Redis' => 'redis://(?P<host>[a-z0-9\._-]+):(?P<port>\d+)/(?P<key>.+)',               // redis://127.0.0.1:6379/log:%worker$
+        'MongoDB' => 'mongodb://(?P<host>[a-z0-9\._-]+):(?P<port>\d+)/(?P<dbname>[a-z0-9_]+)/(?P<collection>.+)',  // mongodb://127.0.0.1:27017/dbname/log:%worker%
+        'CouchDB' => 'couchdb://(?P<host>[a-z0-9\._-]+):(?P<port>\d+)/(?P<dbname>[a-z0-9_]+)',  // couchdb://127.0.0.1:27017/dbname
+        'Amqp' => 'amqp://(?P<host>[a-z0-9\._-]+):(?P<port>\d+)/(?P<name>[a-z0-9_]+)',       // amqp://127.0.0.1:5763/name
+        'Socket' => 'socket:(?P<connection>.+)',                           // socket:udp://127.0.0.1:80
+        'Syslog' => 'syslog:(?P<ident>[a-z]+)/(?P<facility>.+)',           // syslog:myfacility/local6
         'ErrorLog' => 'errorlog:(?P<type>\d)',                               // errorlog:0
-        'Cube'     => 'cube:(?P<url>.+)',                                    // cube:udp://localhost:5000
-        'Rotate'   => 'rotate:(?P<max_files>\d+):(?P<file>.+)',              // rotate:5:path/to/output.log
-        'Console'  => '(console|echo)(?P<ignore>\b)',                        // console
-        'Off'      => '(off|null)(?P<ignore>\b)',                            // off
-        'Stream'   => '(?:stream:)?(?P<stream>[a-z0-9/\\\[\]\(\)\~%\._-]+)'   // stream:path/to/output.log | path/to/output.log
+        'Cube' => 'cube:(?P<url>.+)',                                    // cube:udp://localhost:5000
+        'Rotate' => 'rotate:(?P<max_files>\d+):(?P<file>.+)',              // rotate:5:path/to/output.log
+        'Console' => '(console|echo)(?P<ignore>\b)',                        // console
+        'Off' => '(off|null)(?P<ignore>\b)',                            // off
+        'Stream' => '(?:stream:)?(?P<stream>[a-z0-9/\\\[\]\(\)\~%\._-]+)',   // stream:path/to/output.log | path/to/output.log
     );
 
     /**
-     * Creates a new Connector instance
-     *
-     * @return void
+     * Creates a new Connector instance.
      */
     public function __construct(Command $command, InputInterface $input, OutputInterface $output)
     {
         $this->command = $command;
-        $this->input   = $input;
-        $this->output  = $output;
+        $this->input = $input;
+        $this->output = $output;
     }
 
     /**
-     * Resolves a Monolog handler from string input
+     * Resolves a Monolog handler from string input.
      *
      * @throws InvalidArgumentException
+     *
      * @return Monolog\Handler\HandlerInterface
      */
     public function resolve($logFormat)
@@ -118,7 +118,7 @@ class Connector
 
     /**
      * Performs a pattern match on a string and returns just
-     * the named matches or false if no match
+     * the named matches or false if no match.
      *
      * @return array|false
      */

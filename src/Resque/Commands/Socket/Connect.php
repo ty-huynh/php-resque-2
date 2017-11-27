@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * This file is part of the php-resque package.
  *
  * (c) Michael Haynes <mike@mjphaynes.com>
@@ -7,24 +8,22 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Resque\Commands\Socket;
 
 use Resque;
 use Resque\Commands\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * TCP connect command class
+ * TCP connect command class.
  *
  * @author Michael Haynes <mike@mjphaynes.com>
  */
 class Connect extends Command
 {
-
     protected function configure()
     {
         $this->setName('socket:connect')
@@ -40,17 +39,18 @@ class Connect extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $host    = $this->getConfig('connecthost');
-        $port    = $this->getConfig('connectport');
+        $host = $this->getConfig('connecthost');
+        $port = $this->getConfig('connectport');
         $timeout = $this->getConfig('connecttimeout');
 
-        $conn    = $host.':'.$port;
-        $prompt  = 'php-resque '.$conn.'> ';
+        $conn = $host.':'.$port;
+        $prompt = 'php-resque '.$conn.'> ';
 
         $output->writeln('<comment>Connecting to '.$conn.'...</comment>');
 
         if (!($fh = @fsockopen('tcp://'.$host, $port, $errno, $errstr, $timeout))) {
             $output->writeln('<error>['.$errno.'] '.$errstr.' host '.$conn.'</error>');
+
             return;
         }
 
@@ -69,8 +69,8 @@ class Connect extends Command
                 break;
             }
 
-            $read   = array($fh, $stdin);
-            $write  = null;
+            $read = array($fh, $stdin);
+            $write = null;
             $except = null;
 
             $selected = @stream_select($read, $write, $except, 0);

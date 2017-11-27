@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * This file is part of the php-resque package.
  *
  * (c) Michael Haynes <mike@mjphaynes.com>
@@ -7,40 +8,40 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Resque;
 
 use Resque\Helpers\Stats;
 
 /**
- * Resque worker class
+ * Resque worker class.
  *
  * @author Michael Haynes <mike@mjphaynes.com>
  */
 class Worker
 {
-
     /**
-     * New worker constant
+     * New worker constant.
      */
     const STATUS_NEW = 1;
 
     /**
-     * Running worker constant
+     * Running worker constant.
      */
     const STATUS_RUNNING = 2;
 
     /**
-     * Paused worker constant
+     * Paused worker constant.
      */
     const STATUS_PAUSED = 3;
 
     /**
-     * Worker status constants as text
+     * Worker status constants as text.
      */
     public static $statusText = array(
-        self::STATUS_NEW     => 'Not started',
+        self::STATUS_NEW => 'Not started',
         self::STATUS_RUNNING => 'Running',
-        self::STATUS_PAUSED  => 'Paused'
+        self::STATUS_PAUSED => 'Paused',
     );
 
     /**
@@ -51,27 +52,27 @@ class Worker
     protected $redis;
 
     /**
-     * @var array Array of all associated queues for this worker.
+     * @var array Array of all associated queues for this worker
      */
     protected $queues = array();
 
     /**
-     * @var Host The host of this worker.
+     * @var Host The host of this worker
      */
     protected $host;
 
     /**
-     * @var boolean True if on the next iteration, the worker should shutdown.
+     * @var bool True if on the next iteration, the worker should shutdown
      */
     protected $shutdown = false;
 
     /**
-     * @var boolean Status of the worker.
+     * @var bool Status of the worker
      */
     protected $status = self::STATUS_NEW;
 
     /**
-     * @var string String identifying this worker.
+     * @var string String identifying this worker
      */
     protected $id;
 
@@ -86,17 +87,17 @@ class Worker
     protected $pidFile = null;
 
     /**
-     * @var Job Current job, if any, being processed by this worker.
+     * @var Job Current job, if any, being processed by this worker
      */
     protected $job = null;
 
     /**
-     * @var int Process ID of child worker processes.
+     * @var int Process ID of child worker processes
      */
     protected $child = null;
 
     /**
-     * @var boolean True if uses Redis pop blocking
+     * @var bool True if uses Redis pop blocking
      */
     protected $blocking = true;
 
@@ -125,7 +126,7 @@ class Worker
         E_CORE_ERROR,
         E_CORE_WARNING,
         E_COMPILE_ERROR,
-        E_COMPILE_WARNING
+        E_COMPILE_WARNING,
     );
 
     /**
@@ -134,10 +135,11 @@ class Worker
     protected $logger = null;
 
     /**
-     * Get the Redis key
+     * Get the Redis key.
      *
-     * @param  Worker $worker the worker to get the key for
-     * @param  string $suffix to be appended to key
+     * @param Worker $worker the worker to get the key for
+     * @param string $suffix to be appended to key
+     *
      * @return string
      */
     public static function redisKey($worker = null, $suffix = null)
@@ -146,16 +148,17 @@ class Worker
             return 'workers';
         }
 
-        $id = $worker instanceof Worker ? $worker->id : $worker;
+        $id = $worker instanceof self ? $worker->id : $worker;
 
         return 'worker:'.$id.($suffix ? ':'.$suffix : '');
     }
 
     /**
-     * Return a worker from it's ID
+     * Return a worker from it's ID.
      *
-     * @param  string $id     Worker id
-     * @param  Logger $logger Logger for the worker to use
+     * @param string $id     Worker id
+     * @param Logger $logger Logger for the worker to use
+     *
      * @return Worker
      */
     public static function fromId($id, Logger $logger = null)
@@ -180,18 +183,18 @@ class Worker
     /**
      * Create a new worker.
      *
-     * @param  mixed $queues   Queues for the worker to watch
-     * @param  bool  $blocking Use Redis blocking
+     * @param mixed $queues   Queues for the worker to watch
+     * @param bool  $blocking Use Redis blocking
      */
     public function __construct($queues = '*', $blocking = true)
     {
-        $this->redis    = Redis::instance();
-        $this->queues   = array_map('trim', is_array($queues) ? $queues : explode(',', $queues));
-        $this->blocking = (bool)$blocking;
+        $this->redis = Redis::instance();
+        $this->queues = array_map('trim', is_array($queues) ? $queues : explode(',', $queues));
+        $this->blocking = (bool) $blocking;
 
         $this->host = new Host();
-        $this->pid  = getmypid();
-        $this->id   = $this->host.':'.$this->pid;
+        $this->pid = getmypid();
+        $this->id = $this->host.':'.$this->pid;
 
         Event::fire(Event::WORKER_INSTANCE, $this);
     }
@@ -199,7 +202,7 @@ class Worker
     /**
      * Generate a string representation of this worker.
      *
-     * @return string String identifier for this worker instance.
+     * @return string String identifier for this worker instance
      */
     public function __toString()
     {
@@ -223,7 +226,6 @@ class Worker
             ($this->blocking ? 'timeout blocking' : 'time interval').' <pop>'.$this->interval_string().'</pop>', Logger::INFO);
 
         while (true) {
-
             if ($this->memoryExceeded()) {
                 $this->log('Worker memory has been exceeded, aborting', Logger::CRITICAL);
                 $this->shutdown();
@@ -306,7 +308,7 @@ class Worker
 
                 $this->shutdown();
 
-            // In parent if $pid > 0 since pcntl_fork returns process id of child
+                // In parent if $pid > 0 since pcntl_fork returns process id of child
             } elseif ($this->child > 0) {
                 Event::fire(Event::WORKER_FORK_PARENT, array($this, $job, $this->child));
 
@@ -347,9 +349,9 @@ class Worker
     }
 
     /**
-     * Process a single job
+     * Process a single job.
      *
-     * @param  Job  $job The job to be processed.
+     * @param Job $job The job to be processed
      */
     public function perform(Job $job)
     {
@@ -381,7 +383,7 @@ class Worker
     }
 
     /**
-     * Perform necessary actions to start a worker
+     * Perform necessary actions to start a worker.
      */
     protected function startup()
     {
@@ -433,7 +435,7 @@ class Worker
     }
 
     /**
-     * Cancel the currently running job
+     * Cancel the currently running job.
      */
     public function cancelJob()
     {
@@ -470,7 +472,7 @@ class Worker
     }
 
     /**
-     * Register this worker in Redis and signal handlers that a worker should respond to
+     * Register this worker in Redis and signal handlers that a worker should respond to.
      *
      * - TERM: Shutdown immediately and stop processing jobs
      * - INT: Shutdown immediately and stop processing jobs
@@ -483,29 +485,29 @@ class Worker
 
         $this->redis->sadd(self::redisKey(), $this->id);
         $this->redis->hmset(self::redisKey($this), array(
-            'started'      => microtime(true),
-            'hostname'     => (string)$this->host,
-            'pid'          => getmypid(),
-            'memory'       => memory_get_usage(),
+            'started' => microtime(true),
+            'hostname' => (string) $this->host,
+            'pid' => getmypid(),
+            'memory' => memory_get_usage(),
             'memory_limit' => $this->memoryLimit,
-            'queues'       => implode(',', $this->queues),
-            'shutdown'     => false,
-            'blocking'     => $this->blocking,
-            'status'       => $this->status,
-            'interval'     => $this->interval,
-            'timeout'      => $this->timeout,
-            'processed'    => 0,
-            'cancelled'    => 0,
-            'failed'       => 0,
-            'job_id'       => '',
-            'job_pid'      => 0,
-            'job_started'  => 0
+            'queues' => implode(',', $this->queues),
+            'shutdown' => false,
+            'blocking' => $this->blocking,
+            'status' => $this->status,
+            'interval' => $this->interval,
+            'timeout' => $this->timeout,
+            'processed' => 0,
+            'cancelled' => 0,
+            'failed' => 0,
+            'job_id' => '',
+            'job_pid' => 0,
+            'job_started' => 0,
         ));
 
         if (function_exists('pcntl_signal')) {
             $this->log('Registering sig handlers for worker '.$this, Logger::DEBUG);
 
-            declare (ticks = 1);
+            declare(ticks=1);
             pcntl_signal(SIGTERM, array($this, 'sigForceShutdown'));
             pcntl_signal(SIGINT, array($this, 'sigForceShutdown'));
             pcntl_signal(SIGQUIT, array($this, 'sigShutdown'));
@@ -521,7 +523,7 @@ class Worker
     }
 
     /**
-     * Unregister this worker in Redis
+     * Unregister this worker in Redis.
      */
     public function unregister()
     {
@@ -541,7 +543,7 @@ class Worker
         }
 
         if (is_object($this->job)) {
-            $this->job->fail(new Exception\Cancel);
+            $this->job->fail(new Exception\Cancel());
             $this->log('Failing running job <pop>'.$this->job.'</pop>', Logger::NOTICE);
         }
 
@@ -553,7 +555,7 @@ class Worker
         $this->host->finished($this);
 
         // Remove pid file if one set
-        if (!is_null($this->pidFile) and getmypid() === (int)trim(file_get_contents($this->pidFile))) {
+        if (!is_null($this->pidFile) and getmypid() === (int) trim(file_get_contents($this->pidFile))) {
             unlink($this->pidFile);
         }
 
@@ -561,7 +563,7 @@ class Worker
     }
 
     /**
-     * Signal handler callback for TERM or INT, forces shutdown of worker
+     * Signal handler callback for TERM or INT, forces shutdown of worker.
      *
      * @param int $sig Signal that was sent
      */
@@ -635,7 +637,7 @@ class Worker
     /**
      * Tell Redis which job we're currently working on.
      *
-     * @param Job $job Job instance containing the job we're working on.
+     * @param Job $job Job instance containing the job we're working on
      */
     public function workingOn(Job &$job)
     {
@@ -645,8 +647,8 @@ class Worker
         Event::fire(Event::WORKER_WORKING_ON, array($this, $job));
 
         $this->redis->hmset(self::redisKey($this), array(
-            'job_id'      => $job->getId(),
-            'job_started' => microtime(true)
+            'job_id' => $job->getId(),
+            'job_started' => microtime(true),
         ));
     }
 
@@ -659,9 +661,9 @@ class Worker
         Event::fire(Event::WORKER_DONE_WORKING, array($this, $this->job));
 
         $this->redis->hmset(self::redisKey($this), array(
-            'job_id'      => '',
-            'job_pid'     => 0,
-            'job_started' => 0
+            'job_id' => '',
+            'job_pid' => 0,
+            'job_started' => 0,
         ));
 
         switch ($this->job->getStatus()) {
@@ -680,7 +682,7 @@ class Worker
     }
 
     /**
-     * Fetch the packet for the worker
+     * Fetch the packet for the worker.
      *
      * @return array|false The worker packet or false
      */
@@ -727,7 +729,7 @@ class Worker
      * If * is found in the list of queues, every queue will be searched in
      * alphabetic order.
      *
-     * @return array Array of associated queues.
+     * @return array Array of associated queues
      */
     public function resolveQueues()
     {
@@ -746,9 +748,9 @@ class Worker
     }
 
     /**
-     * Find any delayed jobs and add them to the queue if found
+     * Find any delayed jobs and add them to the queue if found.
      *
-     * @param int $endTime optional end time for range
+     * @param int $endTime   optional end time for range
      * @param int $startTime optional start time for range
      */
     public function queueDelayed($endTime = null, $startTime = 0)
@@ -793,15 +795,15 @@ class Worker
     public function cleanup()
     {
         $workers = self::allWorkers();
-        $hosts   = $this->redis->smembers(Host::redisKey());
+        $hosts = $this->redis->smembers(Host::redisKey());
         $cleaned = array();
 
         foreach ($workers as $worker) {
-            list($host, $pid) = explode(':', (string)$worker, 2);
+            list($host, $pid) = explode(':', (string) $worker, 2);
 
             if (
-                ($host != (string)$this->host and in_array($host, $hosts)) or
-                ($host == (string)$this->host and posix_kill((int)$pid, 0))
+                ($host != (string) $this->host and in_array($host, $hosts)) or
+                ($host == (string) $this->host and posix_kill((int) $pid, 0))
             ) {
                 continue;
             }
@@ -809,16 +811,16 @@ class Worker
             $this->log('Pruning dead worker: '.$worker, Logger::DEBUG);
 
             $worker->unregister();
-            $cleaned[] = (string)$worker;
+            $cleaned[] = (string) $worker;
         }
 
         $workerIds = array_map(
             function ($w) {
-                return (string)$w;
+                return (string) $w;
             },
             $workers
         );
-        $keys = (array)$this->redis->keys('worker:'.$this->host.':*');
+        $keys = (array) $this->redis->keys('worker:'.$this->host.':*');
 
         foreach ($keys as $key) {
             $key = $this->redis->removeNamespace($key);
@@ -839,7 +841,7 @@ class Worker
     }
 
     /**
-     * Return all known workers
+     * Return all known workers.
      *
      * @return array
      */
@@ -860,11 +862,12 @@ class Worker
     }
 
     /**
-     * Return host worker by id
+     * Return host worker by id.
      *
-     * @param  string $id     Worker id
-     * @param  string $host   Hostname
-     * @param  Logger $logger Logger
+     * @param string $id     Worker id
+     * @param string $host   Hostname
+     * @param Logger $logger Logger
+     *
      * @return array|false
      */
     public static function hostWorker($id, $host = null, Logger $logger = null)
@@ -872,7 +875,7 @@ class Worker
         $workers = self::hostWorkers($host);
 
         foreach ($workers as $worker) {
-            if ((string)$id == (string)$worker and posix_kill($worker->getPid(), 0)) {
+            if ((string) $id == (string) $worker and posix_kill($worker->getPid(), 0)) {
                 return $worker;
             }
         }
@@ -881,10 +884,11 @@ class Worker
     }
 
     /**
-     * Return all known workers
+     * Return all known workers.
      *
-     * @param  string $host   Hostname
-     * @param  Logger $logger Logger
+     * @param string $host   Hostname
+     * @param Logger $logger Logger
+     *
      * @return array
      */
     public static function hostWorkers($host = null, Logger $logger = null)
@@ -919,9 +923,9 @@ class Worker
     }
 
     /**
-     * Set the worker id
+     * Set the worker id.
      *
-     * @param  string $id Id to set to
+     * @param string $id Id to set to
      */
     public function setId($id)
     {
@@ -943,9 +947,10 @@ class Worker
     }
 
     /**
-     * Set the worker queues
+     * Set the worker queues.
      *
-     * @param  string $queues Queues for worker to watch
+     * @param string $queues Queues for worker to watch
+     *
      * @return array
      */
     public function setQueues($queues)
@@ -969,7 +974,7 @@ class Worker
 
     /**
      * Set the worker process id - this is done when
-     * worker is loaded from memory
+     * worker is loaded from memory.
      *
      * @param int $pid Set worker pid
      */
@@ -979,7 +984,7 @@ class Worker
             throw new \RuntimeException('Cannot set worker pid after worker has started working');
         }
 
-        $this->pid = (int)$pid;
+        $this->pid = (int) $pid;
     }
 
     /**
@@ -993,9 +998,10 @@ class Worker
     }
 
     /**
-     * Set the worker pid file
+     * Set the worker pid file.
      *
-     * @param  string  $pidFile Filename to store pid in
+     * @param string $pidFile Filename to store pid in
+     *
      * @throws \Exception
      */
     public function setPidFile($pidFile)
@@ -1017,7 +1023,7 @@ class Worker
 
         $this->pidFile = $dir.'/'.$filename;
 
-        if (file_exists($this->pidFile) and posix_kill((int)trim(file_get_contents($this->pidFile)), 0)) {
+        if (file_exists($this->pidFile) and posix_kill((int) trim(file_get_contents($this->pidFile)), 0)) {
             throw new \RuntimeException('Pid file "'.$pidFile.'" already exists and worker is still running.');
         }
 
@@ -1037,7 +1043,7 @@ class Worker
     }
 
     /**
-     * Set the queue host
+     * Set the queue host.
      *
      * @param Host $host The host to set for this worker
      */
@@ -1051,7 +1057,7 @@ class Worker
     }
 
     /**
-     * Get the logger instance
+     * Get the logger instance.
      *
      * @return Logger
      */
@@ -1061,9 +1067,9 @@ class Worker
     }
 
     /**
-     * Set the logger instance
+     * Set the logger instance.
      *
-     * @param  Logger $logger The logger for this worker
+     * @param Logger $logger The logger for this worker
      */
     public function setLogger(Logger $logger = null)
     {
@@ -1071,9 +1077,10 @@ class Worker
     }
 
     /**
-     * Helper function that passes through to logger instance
+     * Helper function that passes through to logger instance.
      *
      * @see    Logger::log For more documentation
+     *
      * @return mixed
      */
     public function log()
@@ -1096,7 +1103,7 @@ class Worker
     }
 
     /**
-     * Set the queue blocking
+     * Set the queue blocking.
      *
      * @param bool $blocking Should worker use Redis blocking
      */
@@ -1106,7 +1113,7 @@ class Worker
             throw new \RuntimeException('Cannot set worker blocking after worker has started working');
         }
 
-        $this->blocking = (bool)$blocking;
+        $this->blocking = (bool) $blocking;
     }
 
     /**
@@ -1120,7 +1127,7 @@ class Worker
     }
 
     /**
-     * Set the worker interval
+     * Set the worker interval.
      *
      * @param int $interval The worker interval
      */
@@ -1144,9 +1151,10 @@ class Worker
     }
 
     /**
-     * Set the worker queue timeout
+     * Set the worker queue timeout.
      *
-     * @param  string  $timeout Worker queue timeout
+     * @param string $timeout Worker queue timeout
+     *
      * @return string
      */
     public function setTimeout($timeout)
@@ -1169,7 +1177,7 @@ class Worker
     }
 
     /**
-     * Set the queue memory limit
+     * Set the queue memory limit.
      *
      * @param int $memoryLimit Memory limit
      */
@@ -1183,7 +1191,7 @@ class Worker
     }
 
     /**
-     * Return array representation of this job
+     * Return array representation of this job.
      *
      * @return array
      */
@@ -1192,30 +1200,30 @@ class Worker
         $packet = $this->getPacket();
 
         return array(
-            'id'           => (string)$this->id,
-            'hostname'     => (string)$packet['hostname'],
-            'pid'          => (int)$packet['pid'],
+            'id' => (string) $this->id,
+            'hostname' => (string) $packet['hostname'],
+            'pid' => (int) $packet['pid'],
 
-            'queues'       => array(
-                'selected' => (array)explode(',', $packet['queues']),
-                'resolved' => (array)$this->resolveQueues()
+            'queues' => array(
+                'selected' => (array) explode(',', $packet['queues']),
+                'resolved' => (array) $this->resolveQueues(),
             ),
-            'shutdown'     => (bool)$packet['shutdown'],
-            'blocking'     => (bool)$packet['blocking'],
-            'status'       => (int)$packet['status'],
-            'interval'     => (int)$packet['interval'],
-            'timeout'      => (int)$packet['timeout'],
-            'memory'       => (int)$packet['memory'],
-            'memory_limit' => (int)$packet['memory_limit'] * 1024 * 1024,
+            'shutdown' => (bool) $packet['shutdown'],
+            'blocking' => (bool) $packet['blocking'],
+            'status' => (int) $packet['status'],
+            'interval' => (int) $packet['interval'],
+            'timeout' => (int) $packet['timeout'],
+            'memory' => (int) $packet['memory'],
+            'memory_limit' => (int) $packet['memory_limit'] * 1024 * 1024,
 
-            'started'      => (float)$packet['started'],
-            'processed'    => (int)$packet['processed'],
-            'cancelled'    => (int)$packet['cancelled'],
-            'failed'       => (int)$packet['failed'],
+            'started' => (float) $packet['started'],
+            'processed' => (int) $packet['processed'],
+            'cancelled' => (int) $packet['cancelled'],
+            'failed' => (int) $packet['failed'],
 
-            'job_id'       => (string)$packet['job_id'],
-            'job_pid'      => (int)$packet['job_pid'],
-            'job_started'  => (float)$packet['job_started'],
+            'job_id' => (string) $packet['job_id'],
+            'job_pid' => (int) $packet['job_pid'],
+            'job_started' => (float) $packet['job_started'],
         );
     }
 
@@ -1227,13 +1235,14 @@ class Worker
      * - PHP Version < 5.5.0 with the PECL proctitle module installed
      * - PHP Version >= 5.5.0 using built in method
      *
-     * @param string $status The updated process title.
+     * @param string $status The updated process title
      */
     protected function updateProcLine($status)
     {
         $status = $this->getProcessTitle($status);
         if (function_exists('cli_set_process_title')) {
             cli_set_process_title($status);
+
             return;
         }
 
@@ -1243,7 +1252,7 @@ class Worker
     }
 
     /**
-     * Creates process title string from current version and status of worker
+     * Creates process title string from current version and status of worker.
      */
     protected function getProcessTitle($status)
     {
@@ -1270,7 +1279,7 @@ class Worker
     }
 
     /**
-     * Returns formatted interval string
+     * Returns formatted interval string.
      *
      * @return string
      */

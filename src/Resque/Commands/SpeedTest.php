@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * This file is part of the php-resque package.
  *
  * (c) Michael Haynes <mike@mjphaynes.com>
@@ -7,26 +8,22 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Resque\Commands;
 
 use Resque;
-use Resque\Commands\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
-use Symfony\Component\Console\Helper\ProgressBar;
 
 /**
- * Performs a raw speed test
+ * Performs a raw speed test.
  *
  * @author Michael Haynes <mike@mjphaynes.com>
  */
 class SpeedTest extends Command
 {
-
     protected function configure()
     {
         $this->setName('speed:test')
@@ -42,7 +39,7 @@ class SpeedTest extends Command
     {
         Resque\Redis::setConfig(array('namespace' => 'resque:speedtest'));
 
-        $testTime = (int)$input->getOption('time') ?: 5;
+        $testTime = (int) $input->getOption('time') ?: 5;
 
         @unlink(RESQUE_DIR.'/test/speed/output.log');
         $process = new Process(RESQUE_BIN_DIR.'/resque worker:start -c '.RESQUE_DIR.'/test/speed/config.yml');
@@ -87,7 +84,7 @@ class SpeedTest extends Command
         $progress_bar .= str_repeat('-', max($progress_length - $progress_complete_length - 1, 0));
         $progress_bar .= $progress_complete_length == $progress_length ? '' : ' '.round($progress_percent * 100).'%';
 
-        $display = <<<STATS
+        $display = <<<'STATS'
 <comment>%title% php-resque speed test</comment>%clr%
 %progress%%clr%
 Time:         <pop>%in%</pop>%clr%
@@ -97,13 +94,13 @@ Avg job time: <pop>%time%</pop>%clr%
 STATS;
 
         $replace = array(
-            '%title%'    => $exec_time == $testTime ? 'Finished' : 'Running',
+            '%title%' => $exec_time == $testTime ? 'Finished' : 'Running',
             '%progress%' => $progress_bar,
-            '%jobs%'     => @$stats['processed'].' job'.(@$stats['processed'] == 1 ? '' : 's'),
-            '%in%'       => $exec_time.'s'.($progress_complete_length == $progress_length ? '' : ' ('.$testTime.'s test)'),
-            '%speed%'    => round($rate, 1).' jobs/s',
-            '%time%'     => $rate > 0 ? round(1 / $rate * 1000, 1).' ms' : '-',
-            '%clr%'      => "\033[K",
+            '%jobs%' => @$stats['processed'].' job'.(@$stats['processed'] == 1 ? '' : 's'),
+            '%in%' => $exec_time.'s'.($progress_complete_length == $progress_length ? '' : ' ('.$testTime.'s test)'),
+            '%speed%' => round($rate, 1).' jobs/s',
+            '%time%' => $rate > 0 ? round(1 / $rate * 1000, 1).' ms' : '-',
+            '%clr%' => "\033[K",
         );
 
         $output->writeln(($reset ? "\033[6A" : '').strtr($display, $replace));

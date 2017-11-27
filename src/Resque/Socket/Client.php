@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * This file is part of the php-resque package.
  *
  * (c) Michael Haynes <mike@mjphaynes.com>
@@ -7,16 +8,16 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Resque\Socket;
 
 /**
- * Socket client connection
+ * Socket client connection.
  *
  * @author Michael Haynes <mike@mjphaynes.com>
  */
 class Client
 {
-
     /**
      * @var socket The client's socket resource, for sending and receiving data with
      */
@@ -42,9 +43,9 @@ class Client
     protected $hostname = null;
 
     /**
-     * Creates the client
+     * Creates the client.
      *
-     * @param resource $socket The resource of the socket the client is connecting by, generally the master socket.
+     * @param resource $socket The resource of the socket the client is connecting by, generally the master socket
      */
     public function __construct(&$socket)
     {
@@ -56,7 +57,7 @@ class Client
     }
 
     /**
-     * String representation of the client
+     * String representation of the client.
      *
      * @return string
      */
@@ -66,7 +67,7 @@ class Client
     }
 
     /**
-     * Closes the socket
+     * Closes the socket.
      */
     public function disconnect()
     {
@@ -77,7 +78,7 @@ class Client
     }
 
     /**
-     * Returns this clients socket
+     * Returns this clients socket.
      *
      * @return socket
      */
@@ -87,7 +88,7 @@ class Client
     }
 
     /**
-     * Gets the IP hostname
+     * Gets the IP hostname.
      *
      * @return string
      */

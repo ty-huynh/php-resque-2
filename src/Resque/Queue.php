@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * This file is part of the php-resque package.
  *
  * (c) Michael Haynes <mike@mjphaynes.com>
@@ -7,18 +8,16 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Resque;
 
-use Resque\Helpers\Stats;
-
 /**
- * Resque queue class
+ * Resque queue class.
  *
  * @author Michael Haynes <mike@mjphaynes.com>
  */
 class Queue
 {
-
     /**
      * @var Redis The Redis instance
      */
@@ -30,10 +29,11 @@ class Queue
     protected $default;
 
     /**
-     * Get the Queue key
+     * Get the Queue key.
      *
-     * @param  Queue|null  $queue the worker to get the key for
-     * @param  string|null $suffix to be appended to key
+     * @param Queue|null  $queue  the worker to get the key for
+     * @param string|null $suffix to be appended to key
+     *
      * @return string
      */
     public static function redisKey($queue = null, $suffix = null)
@@ -46,7 +46,7 @@ class Queue
     }
 
     /**
-     * Create a new queue instance
+     * Create a new queue instance.
      *
      * @param string $default Name of default queue to add job to
      */
@@ -58,9 +58,10 @@ class Queue
     }
 
     /**
-     * Get a job by id
+     * Get a job by id.
      *
-     * @param  string $id Job id
+     * @param string $id Job id
+     *
      * @return Job job instance
      */
     public function job($id)
@@ -69,11 +70,12 @@ class Queue
     }
 
     /**
-     * Push a new job onto the queue
+     * Push a new job onto the queue.
      *
-     * @param  string $job   The job class
-     * @param  mixed  $data  The job data
-     * @param  string $queue The queue to add the job to
+     * @param string $job   The job class
+     * @param mixed  $data  The job data
+     * @param string $queue The queue to add the job to
+     *
      * @return Job job instance
      */
     public function push($job, array $data = null, $queue = null)
@@ -90,10 +92,11 @@ class Queue
      * are deleted upon retrieval. If a given job (payload) already exists,
      * it is updated with the new delay.
      *
-     * @param  int    $delay This can be number of seconds or unix timestamp
-     * @param  string $job   The job class
-     * @param  mixed  $data  The job data
-     * @param  string $queue The queue to add the job to
+     * @param int    $delay This can be number of seconds or unix timestamp
+     * @param string $job   The job class
+     * @param mixed  $data  The job data
+     * @param string $queue The queue to add the job to
+     *
      * @return Job job instance
      */
     public function later($delay, $job, array $data = array(), $queue = null)
@@ -108,7 +111,7 @@ class Queue
         }
 
         // If the delay is smaller than 3 years then assume that an interval
-         // has been passed i.e. 600 seconds, otherwise it's a unix timestamp
+        // has been passed i.e. 600 seconds, otherwise it's a unix timestamp
         if ($delay < 94608000) {
             $delay += time();
         }
@@ -119,9 +122,10 @@ class Queue
     /**
      * Pop the next job off of the queue.
      *
-     * @param  array $queues   Queues to watch for new jobs
-     * @param  int   $timeout  Timeout if blocking
-     * @param  bool  $blocking Should Redis use blocking
+     * @param array $queues   Queues to watch for new jobs
+     * @param int   $timeout  Timeout if blocking
+     * @param bool  $blocking Should Redis use blocking
+     *
      * @return Job|false
      */
     public function pop(array $queues, $timeout = 10, $blocking = true)
@@ -155,8 +159,9 @@ class Queue
     /**
      * Return the size (number of pending jobs) of the specified queue.
      *
-     * @param  string $queue name of the queue to be checked for pending jobs
-     * @return int The size of the queue.
+     * @param string $queue name of the queue to be checked for pending jobs
+     *
+     * @return int The size of the queue
      */
     public function size($queue)
     {
@@ -166,8 +171,9 @@ class Queue
     /**
      * Return the size (number of delayed jobs) of the specified queue.
      *
-     * @param  string $queue name of the queue to be checked for delayed jobs
-     * @return int The size of the delayed queue.
+     * @param string $queue name of the queue to be checked for delayed jobs
+     *
+     * @return int The size of the delayed queue
      */
     public function sizeDelayed($queue)
     {
@@ -177,7 +183,8 @@ class Queue
     /**
      * Get the queue or return the default.
      *
-     * @param  string|null $queue Name of queue
+     * @param string|null $queue Name of queue
+     *
      * @return string
      */
     protected function getQueue($queue)

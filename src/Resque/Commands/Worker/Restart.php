@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * This file is part of the php-resque package.
  *
  * (c) Michael Haynes <mike@mjphaynes.com>
@@ -7,24 +8,22 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Resque\Commands\Worker;
 
 use Resque;
 use Resque\Commands\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\OutputInterface;
 
 /**
- * Worker restart command class
+ * Worker restart command class.
  *
  * @author Michael Haynes <mike@mjphaynes.com>
  */
 class Restart extends Command
 {
-
     protected function configure()
     {
         $this->setName('worker:restart')
@@ -47,6 +46,7 @@ class Restart extends Command
         if ($id) {
             if (false === ($worker = Resque\Worker::hostWorker($id))) {
                 $this->log('There is no worker with id "'.$id.'".', Resque\Logger::ERROR);
+
                 return;
             }
 
@@ -67,12 +67,12 @@ class Restart extends Command
                 if ($child == -1) {
                     $this->log('Unable to fork, worker '.$worker.' has been stopped.', Resque\Logger::CRITICAL);
 
-                // Parent
+                    // Parent
                 } elseif ($child > 0) {
                     $this->log('Worker <pop>'.$worker.'</pop> restarted.');
                     continue;
 
-                // Child
+                    // Child
                 } else {
                     $new_worker = new Resque\Worker($worker->getQueues(), $worker->getBlocking());
                     $new_worker->setInterval($worker->getInterval());

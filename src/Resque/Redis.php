@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * This file is part of the php-resque package.
  *
  * (c) Michael Haynes <mike@mjphaynes.com>
@@ -7,65 +8,64 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Resque;
 
 use Predis;
-use Resque\Helpers\Stats;
 
 /**
- * Resque redis class
+ * Resque redis class.
  *
  * @author Michael Haynes <mike@mjphaynes.com>
  */
 class Redis
 {
-
     /**
-     * Default Redis connection scheme
+     * Default Redis connection scheme.
      */
     const DEFAULT_SCHEME = 'tcp';
 
     /**
-     * Default Redis connection host
+     * Default Redis connection host.
      */
     const DEFAULT_HOST = '127.0.0.1';
 
     /**
-     * Default Redis connection port
+     * Default Redis connection port.
      */
     const DEFAULT_PORT = 6379;
 
     /**
-     * Default Redis namespace
+     * Default Redis namespace.
      */
     const DEFAULT_NS = 'resque';
 
     /**
-    * Default Redis AUTH password
-    */
+     * Default Redis AUTH password.
+     */
     const DEFAULT_PASSWORD = null;
 
     /**
-     * Default Redis Read Write Timeout
+     * Default Redis Read Write Timeout.
      */
     const DEFAULT_RW_TIMEOUT = 60;
 
     /**
-    * Default Redis option for using phpiredis or not
-    */
+     * Default Redis option for using phpiredis or not.
+     */
     const DEFAULT_PHPIREDIS = false;
 
     /**
      * @var array Default configuration
      */
     protected static $config = array(
-        'scheme'     => self::DEFAULT_SCHEME,
-        'host'       => self::DEFAULT_HOST,
-        'port'       => self::DEFAULT_PORT,
-        'namespace'  => self::DEFAULT_NS,
-        'password'   => self::DEFAULT_PASSWORD,
+        'scheme' => self::DEFAULT_SCHEME,
+        'host' => self::DEFAULT_HOST,
+        'port' => self::DEFAULT_PORT,
+        'namespace' => self::DEFAULT_NS,
+        'password' => self::DEFAULT_PASSWORD,
         'rw_timeout' => self::DEFAULT_RW_TIMEOUT,
-        'phpiredis'  => self::DEFAULT_PHPIREDIS
+        'phpiredis' => self::DEFAULT_PHPIREDIS,
     );
 
     /**
@@ -74,7 +74,7 @@ class Redis
     protected static $instance = null;
 
     /**
-     * Establish a Redis connection
+     * Establish a Redis connection.
      *
      * @return Redis
      */
@@ -88,9 +88,9 @@ class Redis
     }
 
     /**
-     * Set the Redis config
+     * Set the Redis config.
      *
-     * @param  array $config Array of configuration settings
+     * @param array $config Array of configuration settings
      */
     public static function setConfig(array $config)
     {
@@ -109,7 +109,7 @@ class Redis
 
     /**
      * @var array List of all commands in Redis that supply a key as their
-     * first argument. Used to prefix keys with the Resque namespace.
+     *            first argument. Used to prefix keys with the Resque namespace
      */
     protected $keyCommands = array(
         'exists',
@@ -187,7 +187,8 @@ class Redis
     /**
      * Establish a Redis connection.
      *
-     * @param  array $config Array of configuration settings
+     * @param array $config Array of configuration settings
+     *
      * @return Redis
      */
     public function __construct(array $config = array())
@@ -195,8 +196,8 @@ class Redis
         // configuration params array
         $params = array(
             'scheme' => $config['scheme'],
-            'host'   => $config['host'],
-            'port'   => $config['port']
+            'host' => $config['host'],
+            'port' => $config['port'],
         );
 
         // setup password
@@ -214,8 +215,8 @@ class Redis
         if (!empty($config['phpiredis'])) {
             $options = array(
                 'connections' => array(
-                    'tcp'  => 'Predis\Connection\PhpiredisStreamConnection',
-                    'unix' => 'Predis\Connection\PhpiredisSocketConnection'
+                    'tcp' => 'Predis\Connection\PhpiredisStreamConnection',
+                    'unix' => 'Predis\Connection\PhpiredisSocketConnection',
                 ),
             );
         }
@@ -235,7 +236,7 @@ class Redis
     }
 
     /**
-     * Set Redis namespace
+     * Set Redis namespace.
      *
      * @param string $namespace New namespace
      */
@@ -249,7 +250,7 @@ class Redis
     }
 
     /**
-     * Get Redis namespace
+     * Get Redis namespace.
      *
      * @return string
      */
@@ -259,9 +260,10 @@ class Redis
     }
 
     /**
-     * Add Redis namespace to a string
+     * Add Redis namespace to a string.
      *
-     * @param  string $string String to namespace
+     * @param string $string String to namespace
+     *
      * @return string
      */
     public function addNamespace($string)
@@ -282,9 +284,10 @@ class Redis
     }
 
     /**
-     * Remove Redis namespace from string
+     * Remove Redis namespace from string.
      *
-     * @param  string $string String to de-namespace
+     * @param string $string String to de-namespace
+     *
      * @return string
      */
     public function removeNamespace($string)
@@ -301,8 +304,9 @@ class Redis
     /**
      * Dynamically pass calls to the Predis.
      *
-     * @param  string  $method     Method to call
-     * @param  array   $parameters Arguments to send to method
+     * @param string $method     Method to call
+     * @param array  $parameters Arguments to send to method
+     *
      * @return mixed
      */
     public function __call($method, $parameters)
@@ -312,7 +316,7 @@ class Redis
         }
 
         // try {
-            return call_user_func_array(array($this->redis, $method), $parameters);
+        return call_user_func_array(array($this->redis, $method), $parameters);
 
         // } catch (\Exception $e) {
         // 	return false;

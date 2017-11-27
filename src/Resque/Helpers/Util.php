@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * This file is part of the php-resque package.
  *
  * (c) Michael Haynes <mike@mjphaynes.com>
@@ -7,26 +8,27 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Resque\Helpers;
 
 /**
- * Resque Utilities
+ * Resque Utilities.
  *
  * @author Michael Haynes <mike@mjphaynes.com>
  */
 class Util
 {
-
     /**
      * Returns human readable sizes. Based on original functions written by
      * [Aidan Lister](http://aidanlister.com/repos/v/function.size_readable.php)
      * and [Quentin Zervaas](http://www.phpriot.com/d/code/strings/filesize-format/).
      *
-     * @param   integer  $bytes size in bytes
-     * @param   string   $force_unit a definitive unit
-     * @param   string   $format the return string format
-     * @param   boolean  $si whether to use SI prefixes or IEC
-     * @return  string
+     * @param int    $bytes      size in bytes
+     * @param string $force_unit a definitive unit
+     * @param string $format     the return string format
+     * @param bool   $si         whether to use SI prefixes or IEC
+     *
+     * @return string
      */
     public static function bytes($bytes, $force_unit = null, $format = null, $si = true)
     {
@@ -37,7 +39,7 @@ class Util
             $units = array('B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB');
             $mod = 1024;
 
-        // SI prefixes (decimal)
+            // SI prefixes (decimal)
         } else {
             $units = array('B', 'kB', 'MB', 'GB', 'TB', 'PB');
             $mod = 1000;
@@ -51,13 +53,13 @@ class Util
     }
 
     /**
-     * Constants for human_time_diff()
+     * Constants for human_time_diff().
      */
     const MINUTE_IN_SECONDS = 60;
-    const HOUR_IN_SECONDS   = 3600;
-    const DAY_IN_SECONDS    = 86400;
-    const WEEK_IN_SECONDS   = 604800;
-    const YEAR_IN_SECONDS   = 3.15569e7;
+    const HOUR_IN_SECONDS = 3600;
+    const DAY_IN_SECONDS = 86400;
+    const WEEK_IN_SECONDS = 604800;
+    const YEAR_IN_SECONDS = 3.15569e7;
 
     /**
      * Determines the difference between two timestamps.
@@ -65,15 +67,16 @@ class Util
      * The difference is returned in a human readable format such as "1 hour",
      * "5 mins", "2 days".
      *
-     * @param int $from Unix timestamp from which the difference begins.
-     * @param int $to Optional. Unix timestamp to end the time difference. Default becomes time() if not set.
-     * @return string Human readable time difference.
+     * @param int $from Unix timestamp from which the difference begins
+     * @param int $to   Optional. Unix timestamp to end the time difference. Default becomes time() if not set
+     *
+     * @return string Human readable time difference
      */
     public static function human_time_diff($from, $to = null)
     {
         $to = $to ?: time();
 
-        $diff = (int)abs($to - $from);
+        $diff = (int) abs($to - $from);
 
         if ($diff < self::MINUTE_IN_SECONDS) {
             $since = array($diff, 'sec');
@@ -106,7 +109,8 @@ class Util
      * @param   mixed   key path string (delimiter separated) or array of keys
      * @param   mixed   value that was found
      * @param   string  key path delimiter
-     * @return  bool
+     *
+     * @return bool
      */
     public static function path($array, $path, &$found, $delimiter = '.')
     {
@@ -129,7 +133,7 @@ class Util
             $key = array_shift($keys);
 
             if (ctype_digit($key)) {
-                $key = (int)$key;
+                $key = (int) $key;
             }
 
             if (isset($array[$key])) {
@@ -141,6 +145,7 @@ class Util
                     }
                 } else {
                     $found = $array[$key];
+
                     return true;
                 }
             } else {

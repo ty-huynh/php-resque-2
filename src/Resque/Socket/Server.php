@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * This file is part of the php-resque package.
  *
  * (c) Michael Haynes <mike@mjphaynes.com>
@@ -7,50 +8,50 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Resque\Socket;
 
 use Resque\Logger;
 
 /**
- * Socket server management
+ * Socket server management.
  *
  * @author Michael Haynes <mike@mjphaynes.com>
  */
 class Server
 {
-
     /**
-     * Default IP to use
+     * Default IP to use.
      */
     const DEFAULT_IP = '0.0.0.0';
 
     /**
-     * Which port to use
+     * Which port to use.
      */
     const DEFAULT_PORT = 7370;
 
     /**
-     * Which protocol to use
+     * Which protocol to use.
      */
     const PROTOCOL = 'tcp';
 
     /**
-     * Client connect event
+     * Client connect event.
      */
     const CLIENT_CONNECT = 1;
 
     /**
-     * Client receive message event
+     * Client receive message event.
      */
     const CLIENT_RECEIVE = 2;
 
     /**
-     * Client disconnect event
+     * Client disconnect event.
      */
     const CLIENT_DISCONNECT = 3;
 
     /**
-     * @var array Configuration information used by the server.
+     * @var array Configuration information used by the server
      */
     protected $config = array();
 
@@ -60,22 +61,22 @@ class Server
     protected $logger;
 
     /**
-     * @var array Dictionary of events and the callbacks attached to them.
+     * @var array Dictionary of events and the callbacks attached to them
      */
     protected $events = array();
 
     /**
-     * @var resource The socket used by the server.
+     * @var resource The socket used by the server
      */
     protected $socket;
 
     /**
-     * @var int The maximum number of clients allowed to connect.
+     * @var int The maximum number of clients allowed to connect
      */
     protected $max_clients = 10;
 
     /**
-     * @var int The maximum number of bytes to read from a socket at a single time.
+     * @var int The maximum number of bytes to read from a socket at a single time
      */
     protected $max_read = 1024;
 
@@ -85,34 +86,34 @@ class Server
     protected $tv_sec = 5;
 
     /**
-     * @var boolean if the server has started
+     * @var bool if the server has started
      */
     protected $started = false;
 
     /**
-     * @var boolean True if on the next iteration, the server should shutdown.
+     * @var bool True if on the next iteration, the server should shutdown
      */
     protected $shutdown = false;
 
     /**
-     * @var array The connected clients.
+     * @var array The connected clients
      */
     protected $clients = array();
 
     /**
      * Creates the socket and starts listening to it.
      *
-     * @param  array  $config Array of configuration options
-     * @param  Logger $logger Output logger
+     * @param array  $config Array of configuration options
+     * @param Logger $logger Output logger
      */
     public function __construct(array $config, Logger $logger)
     {
         $this->logger = $logger;
 
         $defaults = array(
-            'ip'       => self::DEFAULT_IP,
-            'port'     => self::DEFAULT_PORT,
-            'protocol' => self::PROTOCOL
+            'ip' => self::DEFAULT_IP,
+            'port' => self::DEFAULT_PORT,
+            'protocol' => self::PROTOCOL,
         );
 
         $this->config = array_merge($defaults, $config);
@@ -121,7 +122,7 @@ class Server
     /**
      * Generate a string representation of this server.
      *
-     * @return string String identifier for this server instance.
+     * @return string String identifier for this server instance
      */
     public function __toString()
     {
@@ -129,23 +130,37 @@ class Server
     }
 
     /**
-     * Starts the server
+     * Starts the server.
      */
     public function start()
     {
         if (false === ($this->socket = @socket_create(AF_INET, SOCK_STREAM, getprotobyname($this->config['protocol'])))) {
-            throw new Exception(sprintf('socket_create(AF_INET, SOCK_STREAM, <%s>) failed: [%d] %s',
-                $this->config['protocol'], $code = socket_last_error(), socket_strerror($code)));
+            throw new Exception(sprintf(
+                'socket_create(AF_INET, SOCK_STREAM, <%s>) failed: [%d] %s',
+                $this->config['protocol'],
+                $code = socket_last_error(),
+                socket_strerror($code)
+            ));
         }
 
         if (false === @socket_bind($this->socket, $this->config['ip'], $this->config['port'])) {
-            throw new Exception(sprintf('socket_bind($socket, "%s", %d) failed: [%d] %s',
-                $this->config['ip'], $this->config['port'], $code = socket_last_error(), socket_strerror($code)));
+            throw new Exception(sprintf(
+                'socket_bind($socket, "%s", %d) failed: [%d] %s',
+                $this->config['ip'],
+                $this->config['port'],
+                $code = socket_last_error(),
+                socket_strerror($code)
+            ));
         }
 
         if (false === @socket_getsockname($this->socket, $this->config['ip'], $this->config['port'])) {
-            throw new Exception(sprintf('socket_getsockname($socket, "%s", %d) failed: [%d] %s',
-                $this->config['ip'], $this->config['port'], $code = socket_last_error(), socket_strerror($code)));
+            throw new Exception(sprintf(
+                'socket_getsockname($socket, "%s", %d) failed: [%d] %s',
+                $this->config['ip'],
+                $this->config['port'],
+                $code = socket_last_error(),
+                socket_strerror($code)
+            ));
         }
 
         if (false === @socket_listen($this->socket)) {
@@ -166,7 +181,7 @@ class Server
     }
 
     /**
-     * Closes the socket on shutdown
+     * Closes the socket on shutdown.
      */
     public function close()
     {
@@ -187,7 +202,7 @@ class Server
         }
 
         if (function_exists('pcntl_signal')) {
-            declare (ticks = 1);
+            declare(ticks=1);
             pcntl_signal(SIGTERM, array($this, 'shutdown'));
             pcntl_signal(SIGINT, array($this, 'shutdown'));
             pcntl_signal(SIGQUIT, array($this, 'shutdown'));
@@ -262,11 +277,12 @@ class Server
      * Be sure to use the === operator to check for FALSE in case of an error.
      *
      * @param Client $client  Connected client to write to
-     * @param string $message Data to write to the socket.
-     * @param string $end     Data to end the line with.  Specify false if you don't want a line end sent.
+     * @param string $message Data to write to the socket
+     * @param string $end     Data to end the line with.  Specify false if you don't want a line end sent
+     *
      * @return mixed Returns the number of bytes successfully written to the socket or FALSE on failure.
      *               The error code can be retrieved with socket_last_error(). This code may be passed to
-     *               socket_strerror() to get a textual explanation of the error.
+     *               socket_strerror() to get a textual explanation of the error
      */
     public function send(&$client, $message, $end = true)
     {
@@ -297,10 +313,11 @@ class Server
     }
 
     /**
-     * Disconnect a client
+     * Disconnect a client.
      *
-     * @param  Client $client  The client to disconnect
-     * @param  string $message Data to write to the socket.
+     * @param Client $client  The client to disconnect
+     * @param string $message Data to write to the socket
+     *
      * @return mixed
      */
     public function disconnect(Client $client, $message = 'Goodbye.')
@@ -316,9 +333,10 @@ class Server
     }
 
     /**
-     * Helper function to make using connect event easier
+     * Helper function to make using connect event easier.
      *
-     * @param  mixed $callback Any callback callable by call_user_func_array.
+     * @param mixed $callback Any callback callable by call_user_func_array
+     *
      * @return mixed
      */
     public function onConnect($callback)
@@ -327,9 +345,10 @@ class Server
     }
 
     /**
-     * Helper function to make using receive event easier
+     * Helper function to make using receive event easier.
      *
-     * @param  mixed $callback Any callback callable by call_user_func_array.
+     * @param mixed $callback Any callback callable by call_user_func_array
+     *
      * @return mixed
      */
     public function onReceive($callback)
@@ -338,9 +357,10 @@ class Server
     }
 
     /**
-     * Helper function to make using disconnect event easier
+     * Helper function to make using disconnect event easier.
      *
-     * @param  mixed $callback Any callback callable by call_user_func_array.
+     * @param mixed $callback Any callback callable by call_user_func_array
+     *
      * @return mixed
      */
     public function onDisconnect($callback)
@@ -349,10 +369,11 @@ class Server
     }
 
     /**
-     * Adds a function to be called whenever a certain action happens
+     * Adds a function to be called whenever a certain action happens.
      *
-     * @param  string $event    Name of event to listen on.
-     * @param  mixed  $callback Any callback callable by call_user_func_array.
+     * @param string $event    Name of event to listen on
+     * @param mixed  $callback Any callback callable by call_user_func_array
+     *
      * @return true
      */
     public function listen($event, $callback)
@@ -367,10 +388,11 @@ class Server
     }
 
     /**
-     * Deletes a function from the call list for a certain action
+     * Deletes a function from the call list for a certain action.
      *
-     * @param  string $event Name of event.
-     * @param  mixed  $callback The callback as defined when listen() was called.
+     * @param string $event    Name of event
+     * @param mixed  $callback The callback as defined when listen() was called
+     *
      * @return true
      */
     public function forget($event, $callback)
@@ -391,9 +413,10 @@ class Server
     /**
      * Raise a given event with the supplied data.
      *
-     * @param  string $event  Name of event to be raised.
-     * @param  Client $client Connected client
-     * @param  mixed  $data   Optional, any data that should be passed to each callback.
+     * @param string $event  Name of event to be raised
+     * @param Client $client Connected client
+     * @param mixed  $data   Optional, any data that should be passed to each callback
+     *
      * @return true
      */
     public function fire($event, &$client, $data = null)
@@ -418,7 +441,7 @@ class Server
     }
 
     /**
-     * Send log message to logger
+     * Send log message to logger.
      */
     public function log()
     {
@@ -426,7 +449,7 @@ class Server
     }
 
     /**
-     * Write a string to a resource
+     * Write a string to a resource.
      *
      * @param resource $fh     The resource to write to
      * @param string   $string The string to write

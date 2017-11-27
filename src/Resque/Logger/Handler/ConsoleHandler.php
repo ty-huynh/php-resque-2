@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * This file is part of the php-resque package.
  *
  * (c) Michael Haynes <mike@mjphaynes.com>
@@ -7,6 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
+
 namespace Resque\Logger\Handler;
 
 use Resque\Logger;
@@ -15,59 +17,58 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Output\ConsoleOutputInterface;
 
 /**
- * Monolog console handler
+ * Monolog console handler.
  *
  * @author Michael Haynes <mike@mjphaynes.com>
  */
 class ConsoleHandler extends AbstractProcessingHandler
 {
-
     /**
-     * @var OutputInterface  The console output interface
+     * @var OutputInterface The console output interface
      */
     protected $output;
 
     /**
-     * @var array  Map log levels to output verbosity
+     * @var array Map log levels to output verbosity
      */
     private $verbosityLevelMap = array(
-        Logger::INFO      => OutputInterface::VERBOSITY_NORMAL,
-        Logger::NOTICE    => OutputInterface::VERBOSITY_VERBOSE,
-        Logger::WARNING   => OutputInterface::VERBOSITY_VERY_VERBOSE,
-        Logger::DEBUG     => OutputInterface::VERBOSITY_DEBUG,
+        Logger::INFO => OutputInterface::VERBOSITY_NORMAL,
+        Logger::NOTICE => OutputInterface::VERBOSITY_VERBOSE,
+        Logger::WARNING => OutputInterface::VERBOSITY_VERY_VERBOSE,
+        Logger::DEBUG => OutputInterface::VERBOSITY_DEBUG,
 
-        Logger::ERROR     => OutputInterface::VERBOSITY_NORMAL,
-        Logger::CRITICAL  => OutputInterface::VERBOSITY_NORMAL,
-        Logger::ALERT     => OutputInterface::VERBOSITY_NORMAL,
-        Logger::EMERGENCY => OutputInterface::VERBOSITY_NORMAL
+        Logger::ERROR => OutputInterface::VERBOSITY_NORMAL,
+        Logger::CRITICAL => OutputInterface::VERBOSITY_NORMAL,
+        Logger::ALERT => OutputInterface::VERBOSITY_NORMAL,
+        Logger::EMERGENCY => OutputInterface::VERBOSITY_NORMAL,
     );
 
     /**
      * Colours: black, red, green, yellow, blue, magenta, cyan, white
-     * Options: bold, underscore, blink, reverse, conceal
+     * Options: bold, underscore, blink, reverse, conceal.
      *
      * @var array
      */
     private $styleMap = array(
-        'info'      => array(),
-        'notice'    => array(),
-        'warning'   => array('yellow'),
-        'debug'     => array('blue'),
-        'error'     => array('white', 'red'),
-        'critical'  => array('white', 'red'),
-        'alert'     => array('white', 'red'),
+        'info' => array(),
+        'notice' => array(),
+        'warning' => array('yellow'),
+        'debug' => array('blue'),
+        'error' => array('white', 'red'),
+        'critical' => array('white', 'red'),
+        'alert' => array('white', 'red'),
         'emergency' => array('white', 'red'),
 
-        'pop'       => array('green'),
-        'warn'      => array('yellow'),
-        'comment'   => array('yellow'),
-        'question'  => array('black', 'cyan')
+        'pop' => array('green'),
+        'warn' => array('yellow'),
+        'comment' => array('yellow'),
+        'question' => array('black', 'cyan'),
     );
 
     /**
      * @param OutputInterface $output The output interface
-     * @param integer         $level  The minimum logging level at which this handler will be triggered
-     * @param Boolean         $bubble Whether the messages that are handled can bubble up the stack or not
+     * @param int             $level  The minimum logging level at which this handler will be triggered
+     * @param bool            $bubble Whether the messages that are handled can bubble up the stack or not
      */
     public function __construct(OutputInterface $output, $level = Logger::DEBUG, $bubble = true)
     {
@@ -117,9 +118,9 @@ class ConsoleHandler extends AbstractProcessingHandler
         }
 
         if ($record['level'] >= Logger::ERROR and $this->output instanceof ConsoleOutputInterface) {
-            $this->output->getErrorOutput()->write((string)$record['formatted']);
+            $this->output->getErrorOutput()->write((string) $record['formatted']);
         } else {
-            $this->output->write((string)$record['formatted']);
+            $this->output->write((string) $record['formatted']);
         }
     }
 
@@ -128,17 +129,18 @@ class ConsoleHandler extends AbstractProcessingHandler
      */
     protected function getDefaultFormatter()
     {
-        $formatter = new Logger\Formatter\ConsoleFormatter;
+        $formatter = new Logger\Formatter\ConsoleFormatter();
         if (method_exists($formatter, 'allowInlineLineBreaks')) {
             $formatter->allowInlineLineBreaks(true);
         }
+
         return $formatter;
     }
 
     /**
      * Updates the logging level based on the verbosity setting of the console output.
      *
-     * @return Boolean Whether the handler is enabled and verbosity is not set to quiet.
+     * @return bool Whether the handler is enabled and verbosity is not set to quiet
      */
     private function updateLevel()
     {
@@ -147,6 +149,7 @@ class ConsoleHandler extends AbstractProcessingHandler
         }
 
         $this->setLevel(Logger::DEBUG);
+
         return true;
     }
 }
