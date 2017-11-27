@@ -22,10 +22,10 @@ $config->getFinder()
     ->name('*.php');
 
 $config
-    ->setRules([
+    ->setRules(array(
         '@PSR2' => true,
-        'array_syntax' => ['syntax' => 'long'],
-        'header_comment' => ['header' => $header],
-    ]);
+        'array_syntax' => array('syntax' => 'long'),
+        'header_comment' => array('header' => $header),
+    ));
 
 return $config;
