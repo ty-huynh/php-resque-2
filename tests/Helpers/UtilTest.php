@@ -8,11 +8,11 @@ use PHPUnit\Framework\TestCase;
 class SluggerTest extends TestCase
 {
     /**
-     * @param $expected
-     * @param $bytes
-     * @param null $force_unit
-     * @param null $format
-     * @param bool $si
+     * @param string $expected
+     * @param int    $bytes      size in bytes
+     * @param string $force_unit a definitive unit
+     * @param string $format     the return string format
+     * @param bool   $si         whether to use SI prefixes or IEC
      *
      * @dataProvider getBytes
      */
