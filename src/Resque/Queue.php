@@ -57,6 +57,8 @@ class Queue
         $this->redis = Redis::instance();
 
         $this->default = $default ?: \Resque::getConfig('default.jobs.queue', 'default');
+
+        Event::fire(Event::QUEUE_INSTANCE, $this);
     }
 
     /**
