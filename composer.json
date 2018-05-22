@@ -1,5 +1,5 @@
 {
-    "name": "mjphaynes/php-resque-2",
+    "name": "ty-huynh/php-resque",
     "type": "library",
     "description": "Redis backed library for creating background jobs and processing them later.",
     "keywords": ["job", "background", "redis", "resque", "php", "php-resque", "queue", "worker"],
@@ -15,11 +15,11 @@
     "require": {
         "php": ">=5.3.0",
         "ext-pcntl": "*",
-        "predis/predis": "1.1.*",
-        "monolog/monolog": "~1.7",
-        "symfony/console": "~2.7|~4.0.0",
-        "symfony/yaml": "~2.7|~4.0.0",
-        "symfony/process": "~2.7|~4.0.0"
+        "predis/predis": "^1.1",
+        "monolog/monolog": "^1.21",
+        "symfony/console": "^4.0",
+        "symfony/yaml": "^4.0",
+        "symfony/process": "^4.0"
     },
     "suggest": {
         "ext-proctitle": "Allows php-resque to rename the title of UNIX processes to show the status of a worker in PHP versions < 5.5.0.",
